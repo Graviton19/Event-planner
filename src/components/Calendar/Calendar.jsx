@@ -8,12 +8,12 @@ const Calendar = ({ selectedDates, onDateSelect }) => {
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-  
+
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ]
-  
+
   const minYear = today.getFullYear()
   const maxYear = minYear + 10
 
@@ -45,26 +45,23 @@ const Calendar = ({ selectedDates, onDateSelect }) => {
     const firstDay = new Date(currentYear, currentMonth, 1).getDay()
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
     const dayHeaders = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    
+
     const calendarDays = []
-    
-    // Add day headers
+
     dayHeaders.forEach(day => {
       calendarDays.push({ type: 'header', value: day })
     })
-    
-    // Add empty slots for days before the first day of the month
+
     for (let i = 0; i < firstDay; i++) {
       calendarDays.push({ type: 'empty' })
     }
-    
-    // Add days of the month
+
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day)
       const dateString = date.toISOString().split('T')[0]
       const isDisabled = date < today
       const isSelected = selectedDates.has(dateString)
-      
+
       calendarDays.push({
         type: 'day',
         value: day,
@@ -73,7 +70,7 @@ const Calendar = ({ selectedDates, onDateSelect }) => {
         isSelected
       })
     }
-    
+
     return calendarDays
   }
 
@@ -83,37 +80,35 @@ const Calendar = ({ selectedDates, onDateSelect }) => {
   }
 
   return (
-    <div className="bg-white p-4 shadow rounded mb-6">
-      <div className="calendar-controls mb-4 flex items-center justify-between">
+    <div className="bg-white p-3 shadow rounded max-w-sm mx-auto text-sm">
+      <div className="calendar-controls mb-3 flex items-center justify-between text-sm">
         <button
           onClick={() => changeMonth('prev')}
           disabled={currentYear === minYear && currentMonth === 0}
-          className={`
-            month-nav prev px-2 py-1 rounded transition-colors
-            ${currentYear === minYear && currentMonth === 0 
-              ? 'text-gray-300 cursor-not-allowed' 
-              : 'hover:bg-gray-100'
-            }
+          className={`px-2 py-1 rounded transition-colors
+            ${currentYear === minYear && currentMonth === 0
+              ? 'text-gray-300 cursor-not-allowed'
+              : 'hover:bg-gray-100'}
           `}
         >
           ←
         </button>
-        
-        <div className="flex gap-4">
+
+        <div className="flex gap-2">
           <select
             value={currentMonth}
             onChange={(e) => setCurrentMonth(Number(e.target.value))}
-            className="p-2 border rounded"
+            className="p-1 border rounded"
           >
             {months.map((month, index) => (
               <option key={month} value={index}>{month}</option>
             ))}
           </select>
-          
+
           <select
             value={currentYear}
             onChange={(e) => setCurrentYear(Number(e.target.value))}
-            className="p-2 border rounded"
+            className="p-1 border rounded"
           >
             {Array.from(
               { length: maxYear - minYear + 1 },
@@ -123,25 +118,22 @@ const Calendar = ({ selectedDates, onDateSelect }) => {
             ))}
           </select>
         </div>
-        
+
         <button
           onClick={() => changeMonth('next')}
           disabled={currentYear === maxYear && currentMonth === 11}
-          className={`
-            month-nav next px-2 py-1 rounded transition-colors
+          className={`px-2 py-1 rounded transition-colors
             ${currentYear === maxYear && currentMonth === 11
               ? 'text-gray-300 cursor-not-allowed'
-              : 'hover:bg-gray-100'
-            }
+              : 'hover:bg-gray-100'}
           `}
         >
           →
         </button>
       </div>
 
-      <div 
-        className={`
-          calendar grid grid-cols-7 gap-1 transition-opacity duration-200
+      <div
+        className={`grid grid-cols-7 gap-1 transition-opacity duration-200
           ${isTransitioning ? 'opacity-0' : 'opacity-100'}
           ${transitionDirection === 'next' ? 'translate-x-full' : ''}
           ${transitionDirection === 'prev' ? '-translate-x-full' : ''}
@@ -150,24 +142,23 @@ const Calendar = ({ selectedDates, onDateSelect }) => {
         {generateCalendarDates().map((day, index) => {
           if (day.type === 'header') {
             return (
-              <div key={index} className="day-header text-center font-medium py-2">
+              <div key={index} className="text-center font-medium py-1">
                 {day.value}
               </div>
             )
           }
-          
+
           if (day.type === 'empty') {
-            return <div key={index} className="empty-slot" />
+            return <div key={index} className="h-8" />
           }
-          
+
           return (
             <button
               key={index}
               onClick={() => !day.isDisabled && handleDateClick(day.date)}
               disabled={day.isDisabled}
-              className={`
-                date p-2 rounded transition-all
-                ${day.isDisabled ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-blue-50'}
+              className={`p-1 rounded text-sm h-8 w-8 mx-auto flex items-center justify-center
+                ${day.isDisabled ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-blue-100'}
                 ${day.isSelected ? 'bg-blue-500 text-white hover:bg-blue-600' : ''}
               `}
             >
